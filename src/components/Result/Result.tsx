@@ -1,8 +1,13 @@
 import Chart, { Props } from 'react-apexcharts';
 import { useAriesStore } from '../../stores/use-aries-store/use-aries-store';
+import classNames from 'classnames';
+import { Button } from '../ui/Button/Button';
+import { useState } from 'react';
+import { OperationsTable } from '../OperationsTable/OperationsTable';
 
 export const Result = () => {
   const { name } = useAriesStore();
+  const [isShowingTable, setIsShowingTable] = useState(false);
 
   if (!name) {
     return null;
@@ -110,7 +115,7 @@ export const Result = () => {
   return (
     <div className="w-full border border-primary-600 rounded-lg shadow bg-gray-900 p-4 md:p-6">
       <div className="flex justify-between mb-5">
-        <div className="grid gap-4 grid-cols-2">
+        <div className="grid gap-4 grid-cols-3">
           <div>
             <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
               Max Profit
@@ -123,30 +128,47 @@ export const Result = () => {
             </h5>
             <p className="text-white text-2xl leading-none font-bold">$5.40</p>
           </div>
+          <div>
+            <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
+              Break Even Points
+            </h5>
+            <p className="text-white text-2xl leading-none font-bold">32.40</p>
+          </div>
         </div>
         <div>
-          <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
-            Break Even Points
-          </h5>
-          <p className="text-white text-2xl leading-none font-bold">$5.40</p>
+          <Button
+            variant="outline"
+            className="rounded-full"
+            onClick={() => setIsShowingTable(!isShowingTable)}
+          >
+            Show {isShowingTable ? 'Chart' : 'Table'}
+          </Button>
         </div>
       </div>
-      <Chart
-        options={options}
-        series={[
-          {
-            name: 'Profit/Loss',
-            data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-          },
-        ]}
-        type="line"
-      />
+      <div
+        className={classNames('pt-5 animate-fade', {
+          hidden: isShowingTable,
+        })}
+      >
+        <Chart
+          options={options}
+          series={[
+            {
+              name: 'Profit/Loss',
+              data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+            },
+          ]}
+          type="line"
+        />
+      </div>
 
-      {/* <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
-        <div className="pt-5">
-          <p>OI</p>
-        </div>
-      </div> */}
+      <div
+        className={classNames('pt-5 animate-fade', {
+          hidden: !isShowingTable,
+        })}
+      >
+        <OperationsTable />
+      </div>
     </div>
   );
 };

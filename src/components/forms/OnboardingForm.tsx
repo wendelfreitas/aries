@@ -1,7 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import { useForm } from 'react-hook-form';
-import { Button } from '../ui/Button/Button';
-import { Input } from '../ui/Input/Input';
+import { Button } from '../Button/Button';
+import { Input } from '../Input/Input';
 import {
   Form,
   FormControl,
@@ -9,7 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/Form/Form';
+} from '../Form/Form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAriesStore } from '../../stores/use-aries-store/use-aries-store';

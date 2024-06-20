@@ -1,13 +1,13 @@
-import { Button } from '../../components/ui/Button/Button';
-import { Currency } from '../../components/ui/Currency/Currency';
+import { Button } from '../../components/Button/Button';
+import { Currency } from '../../components/Currency/Currency';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '../../components/ui/Form/Form';
-import { Input } from '../../components/ui/Input/Input';
+} from '../../components/Form/Form';
+import { Input } from '../../components/Input/Input';
 import { zodResolver } from '@hookform/resolvers/zod';
 // import { useAriesStore } from '../../stores/use-aries-store/use-aries-store';
 import { useForm, useFieldArray } from 'react-hook-form';

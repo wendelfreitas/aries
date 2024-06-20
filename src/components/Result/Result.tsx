@@ -1,7 +1,7 @@
 import Chart, { Props } from 'react-apexcharts';
 import { useAriesStore } from '../../stores/use-aries-store/use-aries-store';
 import classNames from 'classnames';
-import { Button } from '../ui/Button/Button';
+import { Button } from '../Button/Button';
 import { useState } from 'react';
 import { OperationsTable } from '../OperationsTable/OperationsTable';
 

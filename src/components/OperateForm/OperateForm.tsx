@@ -66,8 +66,6 @@ export const OperateForm = () => {
       premium: Number(operation.premium),
     }));
 
-    console.log(operations);
-
     operate(operations);
   };
 

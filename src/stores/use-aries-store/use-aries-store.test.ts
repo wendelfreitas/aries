@@ -1,60 +1,17 @@
-import { ENUMS } from '@dpen/utils';
-import { useSectorStore } from './use-aries-store';
+import { useAriesStore } from './use-aries-store';
 
-describe('useSectorStore', () => {
+describe('useAriesStore', () => {
   beforeEach(() => {
-    const initialStoreState = useSectorStore.getState();
+    const initialStoreState = useAriesStore.getState();
 
-    useSectorStore.setState(initialStoreState, true);
+    useAriesStore.setState(initialStoreState, true);
   });
 
-  it('should set menu to edit', async () => {
-    const sectorStore = useSectorStore.getState();
+  it('should register a user', async () => {
+    const sectorStore = useAriesStore.getState();
 
-    sectorStore.select({
-      id: '123',
-      name: 'Mock Sector',
-      status: ENUMS.STATUS.ENABLED,
-      isDeletable: false,
-      zonesCount: 1,
-      createdAt: new Date().toString(),
-      updatedAt: new Date().toString(),
-    });
+    sectorStore.register('Wendel Freitas');
 
-    expect(useSectorStore.getState().sector?.name).toBe('Mock Sector');
-  });
-
-  it('should set menu to remove', async () => {
-    const sectorStore = useSectorStore.getState();
-
-    sectorStore.remove({
-      id: '123',
-      name: 'Mock Sector',
-      status: ENUMS.STATUS.ENABLED,
-      isDeletable: false,
-      zonesCount: 1,
-      createdAt: new Date().toString(),
-      updatedAt: new Date().toString(),
-    });
-
-    expect(useSectorStore.getState().exclude?.name).toBe('Mock Sector');
-  });
-
-  it('should set menu to edit', async () => {
-    const sectorStore = useSectorStore.getState();
-
-    sectorStore.remove({
-      id: '123',
-      name: 'Mock Sector',
-      status: ENUMS.STATUS.ENABLED,
-      isDeletable: false,
-      zonesCount: 1,
-      createdAt: new Date().toString(),
-      updatedAt: new Date().toString(),
-    });
-
-    sectorStore.clear();
-
-    expect(useSectorStore.getState().exclude).toBeUndefined();
+    expect(useAriesStore.getState().name).toBe('Wendel Freitas');
   });
 });

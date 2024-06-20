@@ -66,7 +66,11 @@ export const OnboardingForm = () => {
         >
           Let's Start
         </Button>
-        <a href="#" className="text-sm font-semibold leading-6 text-white">
+        <a
+          href="https://tradearies.com/"
+          target="_blank"
+          className="text-sm font-semibold leading-6 text-white"
+        >
           Learn more <span aria-hidden="true">→</span>
         </a>
       </div>

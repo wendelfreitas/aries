@@ -1,19 +1,19 @@
 import classNames from 'classnames';
 import { Fragment } from 'react/jsx-runtime';
+import { useOperationsStore } from '../../stores/use-operations-store/use-operations-store';
+import { OPERATION_TYPE } from '../../utils/enums';
 
 export const OperationsTable = () => {
-  const optionsData = [
-    { type: 'CALL', strike: 100, premium: 5, quantity: 10, time: '2024-06-18' },
-    { type: 'PUT', strike: 150, premium: 8, quantity: 5, time: '2024-07-18' },
-    { type: 'CALL', strike: 200, premium: 10, quantity: 2, time: '2024-08-18' },
-    { type: 'CALL', strike: 200, premium: 10, quantity: 2, time: '2024-08-18' },
-    { type: 'CALL', strike: 200, premium: 10, quantity: 2, time: '2024-08-18' },
-    { type: 'CALL', strike: 100, premium: 5, quantity: 10, time: '2024-06-18' },
-    { type: 'PUT', strike: 150, premium: 8, quantity: 5, time: '2024-07-18' },
-    { type: 'CALL', strike: 200, premium: 10, quantity: 2, time: '2024-08-18' },
-    { type: 'CALL', strike: 200, premium: 10, quantity: 2, time: '2024-08-18' },
-    { type: 'CALL', strike: 200, premium: 10, quantity: 2, time: '2024-08-18' },
-  ];
+  const { operations } = useOperationsStore();
+
+  const dollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+
+  function formatDate(date: Date) {
+    return `${date.getUTCMonth()}/${date.getDay()}/${date.getFullYear()} ${date.getUTCHours()}:${date.getUTCMinutes()}`;
+  }
 
   return (
     <Fragment>
@@ -53,31 +53,31 @@ export const OperationsTable = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {optionsData.map((option, index) => (
+          {operations.map((option, index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                 <span
                   className={classNames(
                     'bg-primary-600 px-3 py-2 rounded-full',
                     {
-                      '!bg-red-600': option.type === 'PUT',
+                      '!bg-red-600': option.type === OPERATION_TYPE.PUT,
                     }
                   )}
                 >
-                  {option.type}
+                  {option.type.toUpperCase()}
                 </span>
               </td>
               <td className="px-6 py-4 text-center whitespace-nowrap text-sm text-white">
-                {option.strike}
+                {dollar.format(option.strike)}
               </td>
               <td className="px-6 py-4  text-center whitespace-nowrap text-sm text-white">
-                {option.premium}
+                {dollar.format(option.premium)}
               </td>
               <td className="px-6 py-4 text-center whitespace-nowrap text-sm text-white">
                 {option.quantity}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                {option.time}
+                {formatDate(option.time)}
               </td>
             </tr>
           ))}

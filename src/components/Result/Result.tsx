@@ -4,13 +4,43 @@ import classNames from 'classnames';
 import { Button } from '../Button/Button';
 import { useState } from 'react';
 import { OperationsTable } from '../OperationsTable/OperationsTable';
+import { useOperationsStore } from '../../stores/use-operations-store/use-operations-store';
+import { OPERATION_TYPE } from '../../utils/enums';
 
 export const Result = () => {
   const { name } = useAriesStore();
+  const { operations } = useOperationsStore();
+
   const [isShowingTable, setIsShowingTable] = useState(false);
 
   if (!name) {
     return null;
+  }
+
+  const prices = Array.from({ length: 10 }, (_, i) => i * 2);
+
+  const dollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+
+  function getCalcProfitLoss(price: number) {
+    if (!operations.length) {
+      return 0;
+    }
+
+    return operations.reduce((total, option) => {
+      const { type, strike, premium, quantity } = option;
+
+      const intrinsicValue =
+        type === OPERATION_TYPE.CALL
+          ? Math.max(0, price - strike)
+          : Math.max(0, strike - price);
+
+      const profitLoss = (intrinsicValue - premium) * quantity;
+
+      return total + profitLoss;
+    }, 0);
   }
 
   const options: Props['options'] = {
@@ -47,31 +77,12 @@ export const Result = () => {
         top: -26,
       },
     },
-    series: [
-      {
-        name: 'Profit',
-        data: [6500, 6418, 6456, 6526, 6356, 6456],
-        color: '#1A56DB',
-      },
-      {
-        name: 'Loss',
-        data: [6456, 6356, 6526, 6332, 6418, 6500],
-        color: '#7E3AF2',
-      },
-    ],
+
     legend: {
       show: false,
     },
     xaxis: {
-      categories: [
-        '01 Feb',
-        '02 Feb',
-        '03 Feb',
-        '04 Feb',
-        '05 Feb',
-        '06 Feb',
-        '07 Feb',
-      ],
+      categories: prices,
       labels: {
         show: true,
         style: {
@@ -112,6 +123,12 @@ export const Result = () => {
     },
   };
 
+  const data = prices.map((price) => getCalcProfitLoss(price));
+
+  const profit = Math.max(...data);
+  const loss = Math.min(...data);
+  const breakEvenPoints = prices.filter((index) => data[index] === 0);
+
   return (
     <div className="w-full border border-primary-600 rounded-lg shadow bg-gray-900 p-4 md:p-6">
       <div className="flex justify-between mb-5">
@@ -120,19 +137,25 @@ export const Result = () => {
             <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
               Max Profit
             </h5>
-            <p className="text-white text-2xl leading-none font-bold">42,3k</p>
+            <p className="text-white text-2xl leading-none font-bold">
+              {dollar.format(profit)}
+            </p>
           </div>
           <div>
             <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
               Max Loss
             </h5>
-            <p className="text-white text-2xl leading-none font-bold">$5.40</p>
+            <p className="text-white text-2xl leading-none font-bold">
+              {dollar.format(loss)}
+            </p>
           </div>
           <div>
             <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
               Break Even Points
             </h5>
-            <p className="text-white text-2xl leading-none font-bold">32.40</p>
+            <p className="text-white text-2xl leading-none font-bold">
+              {breakEvenPoints.join(',')}
+            </p>
           </div>
         </div>
         <div>
@@ -155,7 +178,7 @@ export const Result = () => {
           series={[
             {
               name: 'Profit/Loss',
-              data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+              data,
             },
           ]}
           type="line"

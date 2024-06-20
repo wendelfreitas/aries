@@ -5,26 +5,32 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
 } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { useAriesStore } from '../../stores/use-aries-store/use-aries-store';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { OPERATION_TYPE } from '../../utils/enums';
+import { useOperationsStore } from '../../stores/use-operations-store/use-operations-store';
 import * as z from 'zod';
 import classNames from 'classnames';
-import { OPERATION_TYPE } from '../../utils/enums';
 
 const FIELDS_LIMIT = 4;
 
 export const OperateForm = () => {
-  //   const { name } = useAriesStore();
+  const { operate } = useOperationsStore();
 
   const operationSchema = z.object({
     type: z.enum([OPERATION_TYPE.CALL, OPERATION_TYPE.PUT]),
-    strike: z.string().min(1, 'Strike is required'),
-    premium: z.string(),
-    quantity: z.number().optional(),
+    strike: z
+      .string()
+      .min(1, 'Strike is required')
+      .transform((value) => value && value?.replace(/[^0-9.]/g, '')),
+    premium: z
+      .string()
+      .min(1, 'Premium is required')
+      .transform((value) => value && value?.replace(/[^0-9.]/g, '')),
+    quantity: z.preprocess((value) => Number(value), z.number()),
+    time: z.date(),
   });
 
   const schema = z.object({
@@ -37,6 +43,8 @@ export const OperateForm = () => {
         type: OPERATION_TYPE.CALL,
         strike: '',
         premium: '',
+        quantity: 1,
+        time: new Date(),
       },
     ],
   };
@@ -52,7 +60,15 @@ export const OperateForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
-    console.log(values);
+    const operations = values.operations.map((operation) => ({
+      ...operation,
+      strike: Number(operation.strike),
+      premium: Number(operation.premium),
+    }));
+
+    console.log(operations);
+
+    operate(operations);
   };
 
   return (
@@ -92,24 +108,11 @@ export const OperateForm = () => {
                           </Button>
                         )}
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   );
                 }}
               />
 
-              {/* <FormField
-                control={form.control}
-                name={`operations.${index}.strike`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Switch checked />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name={`operations.${index}.strike`}
@@ -145,7 +148,6 @@ export const OperateForm = () => {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -158,6 +160,7 @@ export const OperateForm = () => {
                     <FormControl>
                       <Input
                         type="number"
+                        min={1}
                         placeholder="Quantity"
                         className={classNames('w-28', {
                           'border-red-500': fieldState.error,
@@ -195,6 +198,8 @@ export const OperateForm = () => {
                     type: OPERATION_TYPE.CALL,
                     strike: '',
                     premium: '',
+                    quantity: 1,
+                    time: new Date(),
                   },
                 ])
               }
@@ -211,6 +216,7 @@ export const OperateForm = () => {
                     strike: '',
                     premium: '',
                     quantity: 1,
+                    time: new Date(),
                   },
                 ])
               }

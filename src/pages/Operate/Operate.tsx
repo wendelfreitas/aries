@@ -1,6 +1,6 @@
 import { Layout } from '../../components/Layout/Layout';
 import { useAriesStore } from '../../stores/use-aries-store/use-aries-store';
-import { OperateForm } from '../../components/forms/OperateForm';
+import { OperateForm } from '../../components/OperateForm/OperateForm';
 
 export const Operate = () => {
   const { name } = useAriesStore();

@@ -1,5 +1,5 @@
 import { Layout } from '../../components/Layout/Layout';
-import { OnboardingForm } from '../../components/forms/OnboardingForm';
+import { OnboardingForm } from '../../components/OnboardingForm/OnboardingForm';
 
 export const Welcome = () => {
   return (
